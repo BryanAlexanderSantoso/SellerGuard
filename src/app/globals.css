@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
+  --color-primary-light: #34d399;
+  --color-sage: #f0fdf4;
+  --color-sage-accent: #b2d8d0;
+  --color-dark: var(--foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-glass: rgba(255, 255, 255, 0.4);
+  --color-glass-dark: rgba(255, 255, 255, 0.1);
+}
+
+:root {
+  --background: #f8fafc;
+  /* Slate-50: Sedikit grayish agar tidak silau */
+  --foreground: #020617;
+  /* Slate-950: Hampir hitam pekat untuk teks */
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0a0c10;
+  --foreground: #ffffff;
+  --primary: #34d399;
+}
+
+/* Colorblind Mode - High Contrast / Protano-friendly */
+.colorblind {
+  filter: saturate(1.5) contrast(1.1);
+}
+
+.colorblind .text-primary,
+.colorblind .bg-primary {
+  --primary: #2563eb;
+  /* Use consistent blue which is easier for most colorblind types */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white border border-slate-200 shadow-xl;
+  }
+
+  .dark .glass {
+    @apply bg-black/40 backdrop-blur-xl border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-white border border-slate-200 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  .dark .glass-card {
+    @apply bg-white/5 backdrop-blur-lg border-white/10 shadow-black/40;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500;
+  }
+
+  .dark .text-gradient {
+    @apply from-emerald-400 to-cyan-400;
+  }
+}
+
+.framer-motion-layout {
+  height: 100%;
+}
