@@ -33,11 +33,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const initAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                setUser(session.user);
-                const r = await fetchRole(session.user.id);
-                setRole(r);
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) {
+                    // Check for invalid refresh token or other session errors
+                    if (error.message.includes("Refresh Token Not Found") || error.message.includes("Invalid Refresh Token")) {
+                        await supabase.auth.signOut();
+                        setUser(null);
+                        setRole(null);
+                    }
+                    console.error('Session init error:', error.message);
+                } else if (session?.user) {
+                    setUser(session.user);
+                    const r = await fetchRole(session.user.id);
+                    setRole(r);
+                }
+            } catch (err) {
+                console.error('Unexpected auth init error:', err);
+                await supabase.auth.signOut();
             }
             setIsLoading(false);
         };
@@ -93,22 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             if (signUpError) return { error: signUpError };
 
-            if (data.user) {
-                const { error: profileError } = await supabase
-                    .from('profiles')
-                    .upsert([
-                        {
-                            id: data.user.id,
-                            email: email,
-                            full_name: fullName,
-                            role: roleToSet
-                        }
-                    ]);
-
-                if (profileError) {
-                    console.error('Error creating profile:', profileError.message || profileError);
-                }
-            }
+            // Profile creation is now handled by the 'on_auth_user_created' database trigger
+            // This prevents RLS (Row Level Security) errors on the client side
 
             return { error: null };
         } catch (err) {

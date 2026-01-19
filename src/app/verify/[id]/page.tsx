@@ -101,7 +101,7 @@ export default function BuyerVerifyPage({ params }: { params: { id: string } }) 
                     <AlertCircle className="w-10 h-10 text-rose-500" />
                 </div>
                 <h1 className="text-2xl font-black text-dark tracking-tight">Order Tidak Ditemukan</h1>
-                <p className="text-dark/60 mt-2 mb-8">Maaf, nomor resi <span className="text-primary font-bold">#{params.id}</span> belum terdaftar di sistem SellerGuard.</p>
+                <p className="text-dark/60 mt-2 mb-8">Maaf, nomor resi <span className="text-primary font-bold">#{params.id}</span> belum terdaftar di sistem EcomGuard.</p>
                 <Link href="/" className="px-8 py-4 bg-dark text-white rounded-2xl font-bold">Kembali ke Beranda</Link>
             </div>
         );
@@ -133,7 +133,7 @@ export default function BuyerVerifyPage({ params }: { params: { id: string } }) 
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-dark text-sm tracking-tight">Melihat Bukti Packing Seller</h4>
-                                        <p className="text-[10px] text-dark/40 font-mono">Diproteksi oleh SellerGuard Vault</p>
+                                        <p className="text-[10px] text-dark/40 font-mono">Diproteksi oleh EcomGuard Vault</p>
                                     </div>
                                 </div>
                                 <button
@@ -242,7 +242,7 @@ export default function BuyerVerifyPage({ params }: { params: { id: string } }) 
             )}
 
             <div className="mt-12 text-center">
-                <p className="text-[10px] text-dark/30 uppercase font-bold tracking-[0.2em]">Verified Secure by SellerGuard Network</p>
+                <p className="text-[10px] text-dark/30 uppercase font-bold tracking-[0.2em]">Verified Secure by EcomGuard Network</p>
             </div>
         </div>
     );

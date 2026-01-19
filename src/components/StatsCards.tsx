@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, TrendingUp, AlertTriangle, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -47,29 +46,33 @@ const StatsCards = () => {
                         label: 'Total Protected',
                         value: totalOrders?.toLocaleString() || '0',
                         icon: ShieldCheck,
-                        color: 'emerald',
+                        color: 'text-emerald-600',
+                        bg: 'bg-emerald-50',
                         trend: '+12% this month'
                     },
                     {
                         label: 'Ongoing Disputes',
                         value: ongoingDisputes?.toString() || '0',
                         icon: Clock,
-                        color: 'amber',
-                        trend: 'Needs your review'
+                        color: 'text-amber-600',
+                        bg: 'bg-amber-50',
+                        trend: 'Needs review'
                     },
                     {
                         label: 'Saved Revenue',
                         value: `Rp ${(totalRevenue / 1000000).toFixed(1)}M`,
                         icon: TrendingUp,
-                        color: 'emerald',
-                        trend: 'Revenue protected'
+                        color: 'text-blue-600',
+                        bg: 'bg-blue-50',
+                        trend: 'Protected'
                     },
                     {
                         label: 'Fraud Attempts',
                         value: fraudAttempts?.toString() || '0',
                         icon: AlertTriangle,
-                        color: 'rose',
-                        trend: 'Community alerts'
+                        color: 'text-rose-600',
+                        bg: 'bg-rose-50',
+                        trend: 'Alerts'
                     }
                 ]);
             } catch (err) {
@@ -86,8 +89,8 @@ const StatsCards = () => {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="glass-card p-6 h-24 flex items-center justify-center">
-                        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                    <div key={i} className="claude-card p-6 h-28 flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-[var(--primary)] animate-spin opacity-50" />
                     </div>
                 ))}
             </div>
@@ -96,34 +99,19 @@ const StatsCards = () => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-                <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className="glass-card p-6"
-                >
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-dark/60">{stat.label}</p>
-                            <h3 className="text-2xl font-bold text-dark mt-1">{stat.value}</h3>
-                            <p className={`text-xs mt-2 font-medium ${stat.color === 'emerald' ? 'text-emerald-600' :
-                                stat.color === 'amber' ? 'text-amber-600' : 'text-rose-600'
-                                }`}>
-                                {stat.trend}
-                            </p>
-                        </div>
-                        <div className={`p-3 rounded-2xl flex items-center justify-center ${stat.color === 'emerald' ? 'bg-emerald-500/10' :
-                            stat.color === 'amber' ? 'bg-amber-500/10' : 'bg-rose-500/10'
-                            }`}>
-                            <stat.icon className={`w-6 h-6 ${stat.color === 'emerald' ? 'text-emerald-600' :
-                                stat.color === 'amber' ? 'text-amber-600' : 'text-rose-600'
-                                }`} />
+            {stats.map((stat) => (
+                <div key={stat.label} className="claude-card p-6 flex flex-col justify-between h-32 hover:border-[var(--primary)] transition-colors">
+                    <div className="flex items-start justify-between mb-2">
+                        <span className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{stat.label}</span>
+                        <div className={`p-1.5 rounded-md ${stat.bg}`}>
+                            <stat.icon className={`w-4 h-4 ${stat.color}`} />
                         </div>
                     </div>
-                </motion.div>
+                    <div>
+                        <h3 className="text-2xl font-serif font-medium text-[var(--color-text-main)] mb-1">{stat.value}</h3>
+                        <p className={`text-xs ${stat.color} opacity-90 font-medium`}>{stat.trend}</p>
+                    </div>
+                </div>
             ))}
         </div>
     );

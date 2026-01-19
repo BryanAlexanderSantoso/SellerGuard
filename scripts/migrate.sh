@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# SellerGuard Database Migration Script
+# EcomGuard Database Migration Script
 # This script helps you run database migrations
 
-echo "🚀 SellerGuard Database Migration"
+echo "🚀 EcomGuard Database Migration"
 echo "=================================="
 echo ""
 

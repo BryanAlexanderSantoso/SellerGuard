@@ -15,13 +15,19 @@ const VerifiedBlacklist = () => {
                 .from('blacklist')
                 .select('*')
                 .eq('status', 'verified')
-                .order('created_at', { ascending: false }) // Tampilkan yang terbaru
+                .order('created_at', { ascending: false })
                 .limit(3);
 
             if (error) throw error;
             setList(data || []);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error fetching landing blacklist:', err);
+            console.error('Error Details:', {
+                message: err?.message,
+                code: err?.code,
+                details: err?.details,
+                hint: err?.hint
+            });
         } finally {
             setIsLoading(false);
         }
@@ -30,7 +36,6 @@ const VerifiedBlacklist = () => {
     useEffect(() => {
         fetchBlacklist();
 
-        // Realtime Subscription
         const channel = supabase
             .channel('public_blacklist_updates')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'blacklist' }, () => {
@@ -46,17 +51,17 @@ const VerifiedBlacklist = () => {
     if (isLoading) {
         return (
             <div className="col-span-full flex flex-col items-center py-12 gap-4">
-                <Loader2 className="w-8 h-8 text-rose-500 animate-spin" />
-                <p className="text-sm font-bold text-slate-400 dark:text-white/40 uppercase tracking-widest">Memuat Daftar...</p>
+                <Loader2 className="w-6 h-6 text-[var(--color-text-muted)] animate-spin" />
+                <p className="text-sm text-[var(--color-text-muted)] font-medium">Memuat Daftar...</p>
             </div>
         );
     }
 
     if (list.length === 0) {
         return (
-            <div className="col-span-full p-12 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
-                <ShieldAlert className="w-12 h-12 text-slate-300 dark:text-white/20 mb-4" />
-                <p className="font-bold text-slate-400 dark:text-white/40 uppercase tracking-widest text-sm">Belum ada penipu yang dipublish hari ini</p>
+            <div className="col-span-full p-12 border border-dashed border-[var(--border)] rounded-xl flex flex-col items-center justify-center text-center">
+                <ShieldAlert className="w-10 h-10 text-[var(--color-text-muted)] opacity-50 mb-3" />
+                <p className="text-[var(--color-text-muted)] font-medium text-sm">Belum ada data blacklist yang dipublish.</p>
             </div>
         );
     }
@@ -66,29 +71,29 @@ const VerifiedBlacklist = () => {
             {list.map((item, i) => (
                 <motion.div
                     key={item.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.1 }}
-                    className="glass-card p-6 border-rose-500/10 group hover:border-rose-500/30 transition-all flex flex-col h-full bg-white dark:bg-white/5"
+                    className="claude-card p-6 flex flex-col h-full bg-[var(--surface)] hover:border-[var(--primary)]"
                 >
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20">
-                            <UserX className="w-6 h-6" />
+                    <div className="flex items-center gap-4 mb-5">
+                        <div className="w-10 h-10 bg-[var(--background)] text-[var(--primary)] rounded-lg flex items-center justify-center border border-[var(--border)]">
+                            <UserX className="w-5 h-5" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white">{item.subject_name}</h4>
-                            <p className="text-[10px] font-black uppercase text-rose-500 tracking-widest">Terverifikasi Penipu</p>
+                            <h4 className="font-serif font-medium text-[var(--color-text-main)]">{item.subject_name}</h4>
+                            <p className="text-xs font-medium text-[var(--primary)] uppercase tracking-wide">Terverifikasi Penipu</p>
                         </div>
                     </div>
 
                     <div className="flex-1 space-y-4">
-                        <div className="p-4 bg-rose-500/5 rounded-2xl border border-rose-500/10">
-                            <p className="text-xs font-bold text-rose-600 dark:text-rose-400 mb-1 uppercase tracking-tighter">Modus Operandi</p>
-                            <p className="text-sm text-slate-600 dark:text-white/70 italic font-medium leading-relaxed">
+                        <div className="p-3 bg-[var(--background)] rounded-lg border border-[var(--border)]">
+                            <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Modus Operandi</p>
+                            <p className="text-sm text-[var(--color-text-main)] italic leading-relaxed">
                                 "{item.reason}"
                             </p>
                         </div>
-                        <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 dark:text-white/40 uppercase tracking-widest px-1">
+                        <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)] font-medium">
                             <span>Platform: {item.platform}</span>
                             <span>Reputasi: {item.trust_score}%</span>
                         </div>

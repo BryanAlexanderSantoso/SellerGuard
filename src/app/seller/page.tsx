@@ -8,7 +8,6 @@ import OnboardingTour from '@/components/OnboardingTour';
 import { Package, ShieldCheck, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 export default function Home() {
@@ -34,25 +33,27 @@ export default function Home() {
 
   return (
     <ProtectedRoute allowedRoles={['seller']}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-background text-foreground transition-colors duration-300 min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-12 bg-[var(--background)] min-h-screen">
+
         {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-dark tracking-tight">
-              Selamat Datang, <span className="text-primary">{userName}</span>!
+            <h1 className="text-3xl font-serif font-medium text-[var(--color-text-main)] mb-2">
+              Selamat Datang, <span className="text-[var(--primary)]">{userName}</span>
             </h1>
-            <p className="text-dark/60 mt-1 flex items-center gap-2">
-              Status Toko: <span className="flex items-center gap-1 text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full text-xs">
-                <ShieldCheck className="w-3 h-3" /> Terlindungi
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-[var(--color-text-muted)]">Status Toko:</span>
+              <span className="flex items-center gap-1.5 text-emerald-700 font-medium bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full text-xs">
+                <ShieldCheck className="w-3.5 h-3.5" /> Terlindungi
               </span>
-            </p>
+            </div>
           </div>
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-dark/10 rounded-xl text-sm font-semibold hover:bg-dark/[0.02] transition-colors">
-              <Package className="w-4 h-4" /> Riwayat Paket
+            <button className="flex items-center gap-2 px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-sm font-medium hover:bg-[var(--background)] transition-colors text-[var(--color-text-main)]">
+              <Package className="w-4 h-4 text-[var(--color-text-muted)]" /> Riwayat Paket
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-dark/10 rounded-xl text-sm font-semibold hover:bg-dark/[0.02] transition-colors">
-              <HelpCircle className="w-4 h-4" /> Bantuan
+            <button className="flex items-center gap-2 px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-sm font-medium hover:bg-[var(--background)] transition-colors text-[var(--color-text-main)]">
+              <HelpCircle className="w-4 h-4 text-[var(--color-text-muted)]" /> Bantuan
             </button>
           </div>
         </div>
@@ -70,7 +71,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tutorial Trigger Tooltip (Optional placeholder for user) */}
         <OnboardingTour />
       </div>
     </ProtectedRoute>

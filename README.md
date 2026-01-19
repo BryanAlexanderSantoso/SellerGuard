@@ -1,8 +1,8 @@
-# 🛡️ SellerGuard - Ecosystem Anti-Fraud untuk UMKM Indonesia
+# 🛡️ EcomGuard - Ecosystem Anti-Fraud untuk UMKM Indonesia
 
 Platform terintegrasi untuk melindungi seller, buyer, dan admin dari penipuan retur paket di marketplace online.
 
-![SellerGuard](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+![EcomGuard](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 ![Database](https://img.shields.io/badge/Database-100%25%20Integrated-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black)
 ![Supabase](https://img.shields.io/badge/Supabase-Powered-green)
@@ -36,7 +36,7 @@ Platform terintegrasi untuk melindungi seller, buyer, dan admin dari penipuan re
 ### 1. Clone & Install
 ```bash
 git clone <repository-url>
-cd SellerGuard
+cd EcomGuard
 npm install
 ```
 
@@ -102,7 +102,7 @@ Semua data di landing page dan dashboard untuk semua role sekarang **fully integ
 ## 📁 Struktur Project
 
 ```
-SellerGuard/
+EcomGuard/
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── page.tsx           # Landing page
@@ -236,7 +236,7 @@ This project is licensed under the MIT License.
 
 - **Documentation**: See `/docs` folder
 - **Issues**: Open GitHub issue
-- **Email**: support@sellerguard.com
+- **Email**: support@ecomguard.com
 
 ---
 
@@ -251,4 +251,4 @@ This project is licensed under the MIT License.
 
 **Made with ❤️ for UMKM Indonesia**
 
-© 2026 SellerGuard. All rights reserved.
+© 2026 EcomGuard. All rights reserved.

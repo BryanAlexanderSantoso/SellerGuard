@@ -1,78 +1,80 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-primary-light: #34d399;
-  --color-sage: #f0fdf4;
-  --color-sage-accent: #b2d8d0;
-  --color-dark: var(--foreground);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-glass: rgba(255, 255, 255, 0.4);
-  --color-glass-dark: rgba(255, 255, 255, 0.1);
+  --color-primary: #d9795c;
+  --color-primary-dark: #b55d42;
+  --color-primary-light: #f2a68d;
+  --color-background: #fbf9f6;
+  --color-surface: #ffffff;
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+  --color-border: #e6e6e6;
+
+  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-sans: "Inter", -apple-system, sans-serif;
 }
 
 :root {
-  --background: #f8fafc;
-  /* Slate-50: Sedikit grayish agar tidak silau */
-  --foreground: #020617;
-  /* Slate-950: Hampir hitam pekat untuk teks */
-  --primary: #10b981;
+  --background: #fbf9f6;
+  /* Warm, paper-like background */
+  --foreground: #333333;
+  /* Soft charcoal */
+  --primary: #d9795c;
+  /* Terracotta/Burnt Orange */
   --primary-foreground: #ffffff;
+  --border: #e6e6e6;
+  --surface: #ffffff;
 }
 
 .dark {
-  --background: #0a0c10;
-  --foreground: #ffffff;
-  --primary: #34d399;
-}
-
-/* Colorblind Mode - High Contrast / Protano-friendly */
-.colorblind {
-  filter: saturate(1.5) contrast(1.1);
-}
-
-.colorblind .text-primary,
-.colorblind .bg-primary {
-  --primary: #2563eb;
-  /* Use consistent blue which is easier for most colorblind types */
+  /* Dark mode for Claude style - warm dark grays */
+  --background: #1a1a1a;
+  --foreground: #fbf9f6;
+  --primary: #d9795c;
+  --surface: #262626;
+  --border: #333333;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--foreground);
+  letter-spacing: -0.02em;
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white border border-slate-200 shadow-xl;
+  .claude-card {
+    @apply bg-[var(--surface)] border border-[var(--border)] rounded-xl transition-all duration-300;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
-  .dark .glass {
-    @apply bg-black/40 backdrop-blur-xl border-white/10;
+  .claude-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  .glass-card {
-    @apply bg-white border border-slate-200 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300;
+  .claude-button {
+    @apply bg-[var(--primary)] text-white font-medium px-6 py-3 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors duration-200;
   }
 
-  .dark .glass-card {
-    @apply bg-white/5 backdrop-blur-lg border-white/10 shadow-black/40;
+  .claude-button-outline {
+    @apply bg-transparent border border-[var(--border)] text-[var(--foreground)] font-medium px-6 py-3 rounded-lg hover:bg-[var(--color-border)] transition-colors duration-200;
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500;
+  .text-serif {
+    font-family: var(--font-serif);
   }
-
-  .dark .text-gradient {
-    @apply from-emerald-400 to-cyan-400;
-  }
-}
-
-.framer-motion-layout {
-  height: 100%;
 }

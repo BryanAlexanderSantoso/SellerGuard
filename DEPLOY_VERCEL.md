@@ -1,6 +1,6 @@
-# 🚀 Panduan Deploy SellerGuard ke Vercel
+# 🚀 Panduan Deploy EcomGuard ke Vercel
 
-Berikut adalah langkah-langkah mudah untuk meng-online-kan aplikasi SellerGuard menggunakan Vercel.
+Berikut adalah langkah-langkah mudah untuk meng-online-kan aplikasi EcomGuard menggunakan Vercel.
 
 ## 1. Persiapan GitHub
 Sebelum deploy, pastikan kodinganmu sudah ada di GitHub.
@@ -19,7 +19,7 @@ Sebelum deploy, pastikan kodinganmu sudah ada di GitHub.
 ## 2. Setup di Vercel
 1.  Buka [vercel.com](https://vercel.com) dan login/daftar (saran: login pakai GitHub).
 2.  Klik tombol **"Add New..."** -> **"Project"**.
-3.  Pilih repository **SellerGuard** yang baru saja kamu push ke GitHub.
+3.  Pilih repository **EcomGuard** yang baru saja kamu push ke GitHub.
 4.  Klik **"Import"**.
 
 ## 3. Konfigurasi Environment Variables (PENTING!)
@@ -37,7 +37,7 @@ Kamu WAJIB memasukkan 2 variabel ini agar database Supabase tersambung.
 1.  Klik tombol **"Deploy"**.
 2.  Tunggu proses build selesai (biasanya 1-2 menit).
 3.  Jika berhasil, layar akan menampilkan kembang api dan tombol **"Go to Dashboard"**.
-4.  Klik domain yang diberikan (contoh: `sellerguard.vercel.app`) untuk melihat hasilnya.
+4.  Klik domain yang diberikan (contoh: `ecomguard.vercel.app`) untuk melihat hasilnya.
 
 ## 5. Post-Deployment Check
 Setelah website online:

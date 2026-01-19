@@ -63,24 +63,21 @@ const OnboardingTour = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-dark/40 backdrop-blur-md"
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                         onClick={closeTour}
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-lg glass bg-white p-8 rounded-[40px] shadow-2xl overflow-hidden"
+                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                        className="relative w-full max-w-lg claude-card p-8 bg-[var(--surface)] shadow-2xl"
                     >
-                        {/* Background Accent */}
-                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-
                         <button
                             onClick={closeTour}
-                            className="absolute top-6 right-6 p-2 hover:bg-dark/5 rounded-full transition-colors"
+                            className="absolute top-4 right-4 p-2 hover:bg-[var(--background)] rounded-full transition-colors"
                         >
-                            <X className="w-5 h-5 text-dark/40" />
+                            <X className="w-5 h-5 text-[var(--color-text-muted)]" />
                         </button>
 
                         <div className="relative z-10">
@@ -89,16 +86,16 @@ const OnboardingTour = () => {
                                     key={currentStep}
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mb-8"
+                                    className="w-16 h-16 bg-[var(--background)] rounded-2xl flex items-center justify-center mb-6 border border-[var(--border)]"
                                 >
-                                    {React.createElement(steps[currentStep].icon, { className: "w-10 h-10 text-primary" })}
+                                    {React.createElement(steps[currentStep].icon, { className: "w-8 h-8 text-[var(--primary)]" })}
                                 </motion.div>
 
                                 <motion.h2
                                     key={`title-${currentStep}`}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-2xl font-bold text-dark mb-4"
+                                    className="text-xl font-serif font-medium text-[var(--color-text-main)] mb-3"
                                 >
                                     {steps[currentStep].title}
                                 </motion.h2>
@@ -108,18 +105,18 @@ const OnboardingTour = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="text-dark/60 leading-relaxed mb-10"
+                                    className="text-[var(--color-text-muted)] leading-relaxed mb-8 text-sm"
                                 >
                                     {steps[currentStep].description}
                                 </motion.p>
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between mt-auto">
                                 <div className="flex gap-2">
                                     {steps.map((_, i) => (
                                         <div
                                             key={i}
-                                            className={`h-1.5 rounded-full transition-all duration-300 ${currentStep === i ? 'w-8 bg-primary' : 'w-2 bg-primary/20'
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${currentStep === i ? 'w-8 bg-[var(--primary)]' : 'w-2 bg-[var(--border)]'
                                                 }`}
                                         />
                                     ))}
@@ -127,10 +124,10 @@ const OnboardingTour = () => {
 
                                 <button
                                     onClick={nextStep}
-                                    className="bg-primary text-white font-bold px-8 py-4 rounded-2xl flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                                    className="claude-button flex items-center gap-2 text-sm"
                                 >
                                     {currentStep === steps.length - 1 ? 'Mulai Sekarang' : 'Lanjut'}
-                                    <ChevronRight className="w-5 h-5" />
+                                    <ChevronRight className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>

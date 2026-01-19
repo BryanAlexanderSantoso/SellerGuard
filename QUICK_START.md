@@ -1,4 +1,4 @@
-# 🚀 Quick Start - SellerGuard Database Integration
+# 🚀 Quick Start - EcomGuard Database Integration
 
 ## ⚡ Langkah Cepat (5 Menit)
 

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldAlert, ExternalLink, ThumbsDown, UserX, Loader2 } from 'lucide-react';
+import { ShieldAlert, ExternalLink, UserX, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
@@ -55,83 +55,71 @@ const BlacklistCard = () => {
         const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
         if (diffInHours < 1) return 'Baru saja';
-        if (diffInHours < 24) return `${diffInHours} jam yang lalu`;
-        return `${Math.floor(diffInHours / 24)} hari yang lalu`;
+        if (diffInHours < 24) return `${diffInHours} jam lalu`;
+        return `${Math.floor(diffInHours / 24)} hari lalu`;
     };
 
     return (
-        <div className="glass-card p-8">
-            <div className="flex items-center justify-between mb-8">
+        <div className="claude-card p-6 h-full flex flex-col">
+            <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">Database Penipu</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Laporan terbaru dari komunitas SellerGuard</p>
+                    <h2 className="text-lg font-serif font-medium text-[var(--color-text-main)]">Database Penipu</h2>
+                    <p className="text-sm text-[var(--color-text-muted)]">Laporan terbaru komunitas</p>
                 </div>
-                <Link href="/blacklist" className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                <Link href="/blacklist" className="text-[var(--primary)] text-sm font-medium flex items-center gap-1 hover:opacity-80 transition-opacity">
                     Lihat Semua <ExternalLink className="w-4 h-4" />
                 </Link>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 flex-1">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
-                        <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                        <p className="text-xs font-bold text-dark/40 uppercase tracking-widest">Memuat database...</p>
+                        <Loader2 className="w-6 h-6 text-[var(--primary)] animate-spin opacity-50" />
+                        <p className="text-xs text-[var(--color-text-muted)]">Memuat database...</p>
                     </div>
                 ) : entries.length === 0 ? (
-                    <div className="text-center py-12 border-2 border-dashed border-dark/5 rounded-[2rem] bg-dark/[0.01]">
-                        <UserX className="w-12 h-12 text-dark/10 mx-auto mb-3" />
-                        <p className="text-sm text-dark/40 font-bold uppercase tracking-widest">Belum ada laporan terverifikasi</p>
+                    <div className="text-center py-12 border border-dashed border-[var(--border)] rounded-xl bg-[var(--background)]">
+                        <UserX className="w-10 h-10 text-[var(--color-text-muted)] mx-auto mb-3 opacity-50" />
+                        <p className="text-sm text-[var(--color-text-muted)]">Belum ada laporan terverifikasi</p>
                     </div>
                 ) : (
                     entries.map((account, index) => (
                         <motion.div
                             key={account.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="flex items-center justify-between p-4 bg-white/80 dark:bg-white/5 border border-dark/5 dark:border-white/5 rounded-2xl hover:bg-white dark:hover:bg-white/10 transition-all group"
+                            className="flex items-start justify-between p-4 bg-[var(--background)] border border-[var(--border)] rounded-xl hover:shadow-sm transition-all"
                         >
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
-                                    <UserX className="text-rose-600 w-6 h-6" />
+                            <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 bg-rose-50 rounded-lg flex items-center justify-center shrink-0">
+                                    <UserX className="text-rose-600 w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-dark">{account.subject_name}</h4>
+                                    <h4 className="font-medium text-[var(--color-text-main)] text-sm">{account.subject_name}</h4>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <span className="text-[10px] bg-dark/5 px-2 py-0.5 rounded-full text-dark/60 font-bold uppercase tracking-wider">{account.platform}</span>
-                                        <span className="text-xs text-rose-500 font-medium">{account.reason}</span>
+                                        <span className="text-xs text-[var(--color-text-muted)] bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded">{account.platform}</span>
+                                        <span className="text-xs text-rose-600 truncate max-w-[120px]">{account.reason}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="text-right">
+                            <div className="text-right shrink-0">
                                 <div className="flex flex-col items-end">
-                                    <span className="text-[10px] text-dark/40 uppercase font-bold tracking-widest mb-1">Trust Score</span>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-24 h-2 bg-dark/5 rounded-full overflow-hidden">
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${account.trust_score}%` }}
-                                                transition={{ duration: 1, delay: 0.5 }}
-                                                className={`h-full ${account.trust_score < 40 ? 'bg-rose-500' : 'bg-amber-500'
-                                                    }`}
-                                            />
-                                        </div>
-                                        <span className={`text-xs font-bold ${account.trust_score < 40 ? 'text-rose-600' : 'text-amber-600'
-                                            }`}>
-                                            {account.trust_score}%
-                                        </span>
-                                    </div>
+                                    <span className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wide mb-1">Trust Score</span>
+                                    <span className={`text-sm font-medium ${account.trust_score < 40 ? 'text-rose-600' : 'text-amber-600'}`}>
+                                        {account.trust_score}%
+                                    </span>
                                 </div>
-                                <p className="text-[10px] text-dark/40 mt-1">{formatDate(account.created_at)}</p>
+                                <p className="text-[10px] text-[var(--color-text-muted)] mt-1">{formatDate(account.created_at)}</p>
                             </div>
                         </motion.div>
                     ))
                 )}
             </div>
 
-            <Link href="/blacklist/report" className="w-full mt-6 py-4 bg-rose-50 text-rose-600 font-bold rounded-2xl border border-rose-100 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center gap-2 group">
-                <ShieldAlert className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <Link href="/blacklist/report" className="w-full mt-6 py-3 bg-[var(--surface)] text-rose-600 font-medium text-sm rounded-lg border border-rose-100 hover:bg-rose-50 transition-colors flex items-center justify-center gap-2">
+                <ShieldAlert className="w-4 h-4" />
                 Laporkan Akun Mencurigakan
             </Link>
         </div>

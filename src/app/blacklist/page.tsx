@@ -1,19 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Gavel,
     Search,
-    Filter,
-    AlertTriangle,
-    ExternalLink,
     UserX,
     Loader2,
     Check,
     X,
     ShieldAlert,
-    Globe
+    Globe,
+    AlertCircle,
+    User
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
@@ -106,165 +105,202 @@ export default function BlacklistPage() {
 
     return (
         <ProtectedRoute allowedRoles={['admin', 'seller']}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-background text-foreground transition-colors duration-300 min-h-screen">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-dark dark:text-white tracking-tight">Database <span className="text-rose-500">Blacklist</span></h1>
-                        <p className="text-dark/60 dark:text-white/60 mt-1 italic">Cek reputasi pembeli sebelum memproses pesanan paket</p>
-                    </div>
-                    <div className="flex gap-3">
+            <div className="min-h-screen bg-[var(--background)] pt-32 pb-20 px-6">
+                <div className="max-w-7xl mx-auto">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                        <div>
+                            <h1 className="text-3xl font-serif font-medium text-[var(--color-text-main)]">Database Blacklist</h1>
+                            <p className="text-[var(--color-text-muted)] mt-2">Cek reputasi pembeli sebelum memproses pesanan paket</p>
+                        </div>
                         <div className="relative">
                             <input
                                 type="text"
                                 placeholder="Cari nama atau username..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="bg-white dark:bg-white/5 border border-dark/10 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-4 focus:ring-rose-500/10 outline-none w-80 shadow-sm text-dark dark:text-white transition-all"
+                                className="w-80 pl-10 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition-all text-sm text-[var(--color-text-main)] shadow-sm"
                             />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark/30 dark:text-white/30" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
                         </div>
                     </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div className="glass-card p-6 border-rose-100 dark:border-rose-500/20">
-                        <p className="text-xs font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest mb-1">Total Blacklisted</p>
-                        <h3 className="text-4xl font-black text-rose-500">{stats.total.toLocaleString()}</h3>
-                    </div>
-                    <div className="glass-card p-6 md:block hidden">
-                        <p className="text-xs font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest mb-1">Reports Today</p>
-                        <h3 className="text-4xl font-black text-dark dark:text-white">{stats.today}</h3>
-                    </div>
-                    <div className="glass-card p-6 bg-rose-500/5">
-                        <p className="text-xs font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest mb-1">Avg. Trust Score</p>
-                        <h3 className="text-4xl font-black text-rose-600 dark:text-rose-400">{stats.avgScore}%</h3>
-                    </div>
-                    <div className="glass-card p-6">
-                        <p className="text-xs font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest mb-1">Verified Frauds</p>
-                        <h3 className="text-4xl font-black text-emerald-600 dark:text-emerald-400">{stats.verified.toLocaleString()}</h3>
-                    </div>
-                </div>
+                    {/* StatsGrid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div className="claude-card p-6">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-rose-50 rounded-lg">
+                                    <ShieldAlert className="w-5 h-5 text-rose-600" />
+                                </div>
+                                <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Total Blacklisted</p>
+                            </div>
+                            <h3 className="text-3xl font-serif font-medium text-[var(--color-text-main)]">{stats.total.toLocaleString()}</h3>
+                        </div>
 
-                <div className="glass-card overflow-hidden dark:bg-white/5">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="bg-dark/[0.02] dark:bg-white/[0.02] text-xs font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest">
-                                    <th className="px-8 py-5">Subjek / User</th>
-                                    <th className="px-8 py-5">Platform</th>
-                                    <th className="px-8 py-5">Alasan Kejadian</th>
-                                    <th className="px-8 py-5 text-center">Trust Score</th>
-                                    {role === 'admin' && <th className="px-8 py-5 text-center">Landing Page</th>}
-                                    <th className="px-8 py-5 text-right">Moderasi</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-dark/5 dark:divide-white/5">
-                                {isLoading ? (
-                                    <tr>
-                                        <td colSpan={6} className="px-8 py-20 text-center">
-                                            <div className="flex flex-col items-center gap-3">
-                                                <Loader2 className="w-8 h-8 text-rose-500 animate-spin" />
-                                                <p className="text-xs font-bold text-dark/30 dark:text-white/30 uppercase tracking-[0.2em]">Memuat Database...</p>
-                                            </div>
-                                        </td>
+                        <div className="claude-card p-6 md:block hidden">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-[var(--background)] rounded-lg border border-[var(--border)]">
+                                    <Gavel className="w-5 h-5 text-[var(--color-text-main)]" />
+                                </div>
+                                <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Reports Today</p>
+                            </div>
+                            <h3 className="text-3xl font-serif font-medium text-[var(--color-text-main)]">{stats.today}</h3>
+                        </div>
+
+                        <div className="claude-card p-6">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-amber-50 rounded-lg">
+                                    <AlertCircle className="w-5 h-5 text-amber-600" />
+                                </div>
+                                <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Avg. Trust Score</p>
+                            </div>
+                            <h3 className="text-3xl font-serif font-medium text-[var(--color-text-main)]">{stats.avgScore}%</h3>
+                        </div>
+
+                        <div className="claude-card p-6">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-emerald-50 rounded-lg">
+                                    <Check className="w-5 h-5 text-emerald-600" />
+                                </div>
+                                <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Verified Frauds</p>
+                            </div>
+                            <h3 className="text-3xl font-serif font-medium text-[var(--color-text-main)]">{stats.verified.toLocaleString()}</h3>
+                        </div>
+                    </div>
+
+                    {/* Content Table */}
+                    <div className="claude-card overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="border-b border-[var(--border)] bg-[var(--background)]">
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed">Subjek / User</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed">Platform</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed">Alasan</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed text-center">Trust Score</th>
+                                        {role === 'admin' && <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed text-center">Landing Page</th>}
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest leading-relaxed text-right">Moderasi</th>
                                     </tr>
-                                ) : filteredList.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={6} className="px-8 py-20 text-center text-dark/30 dark:text-white/30 font-bold uppercase tracking-widest text-xs">
-                                            Tidak ada data ditemukan
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredList.map((item, index) => (
-                                        <motion.tr
-                                            key={item.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="hover:bg-dark/[0.01] dark:hover:bg-white/[0.01] transition-colors"
-                                        >
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-10 h-10 ${item.status === 'pending' ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'} rounded-full flex items-center justify-center`}>
-                                                        {item.status === 'pending' ? <ShieldAlert className="w-5 h-5" /> : <UserX className="w-5 h-5" />}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-dark dark:text-white">{item.subject_name}</p>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-widest ${item.status === 'verified' ? 'bg-rose-500 text-white' :
-                                                                item.status === 'rejected' ? 'bg-dark/20 text-dark/50' :
-                                                                    'bg-amber-500 text-white animate-pulse'
-                                                                }`}>
-                                                                {item.status}
-                                                            </span>
-                                                            <p className="text-[10px] text-dark/40 dark:text-white/40 font-mono">ID: {item.id?.split('-')[0]}</p>
+                                </thead>
+                                <tbody className="divide-y divide-[var(--border)]">
+                                    {isLoading ? (
+                                        <tr>
+                                            <td colSpan={6} className="px-6 py-24 text-center">
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <Loader2 className="w-6 h-6 text-[var(--color-text-muted)] animate-spin" />
+                                                    <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Memuat Database...</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : filteredList.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className="px-6 py-24 text-center">
+                                                <div className="flex flex-col items-center gap-3 opacity-60">
+                                                    <UserX className="w-8 h-8 text-[var(--color-text-muted)]" />
+                                                    <p className="text-sm font-medium text-[var(--color-text-muted)]">Tidak ada data ditemukan</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        filteredList.map((item, index) => (
+                                            <motion.tr
+                                                key={item.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                                className="group hover:bg-[var(--background)] transition-colors"
+                                            >
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${item.status === 'pending'
+                                                                ? 'bg-amber-50 border-amber-100 text-amber-600'
+                                                                : 'bg-rose-50 border-rose-100 text-rose-600'
+                                                            }`}>
+                                                            <User className="w-4 h-4" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium text-sm text-[var(--color-text-main)]">{item.subject_name}</p>
+                                                            <div className="flex items-center gap-2 mt-0.5">
+                                                                <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wide ${item.status === 'verified' ? 'bg-rose-100 text-rose-700' :
+                                                                        item.status === 'rejected' ? 'bg-gray-100 text-gray-500' :
+                                                                            'bg-amber-100 text-amber-700'
+                                                                    }`}>
+                                                                    {item.status}
+                                                                </span>
+                                                                <span className="text-[10px] font-mono text-[var(--color-text-muted)]">ID: {item.id?.slice(0, 4)}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <span className="text-[10px] font-black bg-dark/5 dark:bg-white/10 px-3 py-1 rounded-full text-dark/70 dark:text-white/70 uppercase tracking-widest">{item.platform}</span>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <p className="text-sm font-medium text-rose-600 dark:text-rose-400 italic select-none">"{item.reason}"</p>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex flex-col items-center gap-2">
-                                                    <div className="w-24 h-2 bg-dark/5 dark:bg-white/10 rounded-full overflow-hidden">
-                                                        <motion.div
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: `${item.trust_score}%` }}
-                                                            transition={{ duration: 1, delay: 0.5 }}
-                                                            className={`h-full ${item.trust_score < 40 ? 'bg-rose-500' : 'bg-amber-500'
-                                                                }`}
-                                                        />
-                                                    </div>
-                                                    <span className={`text-xs font-bold ${item.trust_score < 40 ? 'text-rose-600' : 'text-amber-600'
-                                                        }`}>{item.trust_score}%</span>
-                                                </div>
-                                            </td>
-                                            {role === 'admin' && (
-                                                <td className="px-8 py-6 text-center">
-                                                    <button
-                                                        onClick={() => handleToggleLanding(item.id, item.show_on_landing_page)}
-                                                        className={`p-2 rounded-lg transition-all ${item.show_on_landing_page ? 'bg-primary text-white' : 'bg-dark/5 text-dark/30 hover:bg-dark/10'}`}
-                                                        title="Publish to Landing Page"
-                                                    >
-                                                        <Globe className="w-4 h-4" />
-                                                    </button>
                                                 </td>
-                                            )}
-                                            <td className="px-8 py-6 text-right">
-                                                {role === 'admin' ? (
-                                                    <div className="flex justify-end gap-2">
-                                                        <button
-                                                            onClick={() => handleUpdateStatus(item.id, 'verified')}
-                                                            disabled={item.status === 'verified'}
-                                                            className="p-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 hover:text-white rounded-lg transition-all disabled:opacity-30 disabled:hover:bg-emerald-500/10 disabled:hover:text-emerald-600"
-                                                            title="Verifikasi"
-                                                        >
-                                                            <Check className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleUpdateStatus(item.id, 'rejected')}
-                                                            disabled={item.status === 'rejected'}
-                                                            className="p-2 bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition-all disabled:opacity-30 disabled:hover:bg-rose-500/10 disabled:hover:text-rose-600"
-                                                            title="Tolak"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
+                                                <td className="px-6 py-4">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[var(--background)] border border-[var(--border)] text-[var(--color-text-main)] capitalize">
+                                                        {item.platform}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <p className="text-sm text-[var(--color-text-muted)] italic max-w-xs truncate" title={item.reason}>
+                                                        "{item.reason}"
+                                                    </p>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col items-center gap-1.5">
+                                                        <div className="w-20 h-1.5 bg-[var(--background)] rounded-full overflow-hidden border border-[var(--border)]">
+                                                            <motion.div
+                                                                initial={{ width: 0 }}
+                                                                animate={{ width: `${item.trust_score}%` }}
+                                                                transition={{ duration: 0.5, delay: 0.2 }}
+                                                                className={`h-full rounded-full ${item.trust_score < 40 ? 'bg-rose-500' : 'bg-amber-500'}`}
+                                                            />
+                                                        </div>
+                                                        <span className={`text-[10px] font-bold ${item.trust_score < 40 ? 'text-rose-600' : 'text-amber-600'}`}>
+                                                            {item.trust_score}% Score
+                                                        </span>
                                                     </div>
-                                                ) : (
-                                                    <button className="text-dark/40 dark:text-white/40 hover:text-rose-500 transition-colors">
-                                                        <ExternalLink className="w-5 h-5" />
-                                                    </button>
+                                                </td>
+                                                {role === 'admin' && (
+                                                    <td className="px-6 py-4 text-center">
+                                                        <button
+                                                            onClick={() => handleToggleLanding(item.id, item.show_on_landing_page)}
+                                                            className={`p-1.5 rounded-lg transition-all ${item.show_on_landing_page
+                                                                    ? 'bg-[var(--primary)] text-white shadow-sm'
+                                                                    : 'text-[var(--color-text-muted)] hover:bg-[var(--background)]'
+                                                                }`}
+                                                            title="Toggle Display on Landing Page"
+                                                        >
+                                                            <Globe className="w-4 h-4" />
+                                                        </button>
+                                                    </td>
                                                 )}
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                                <td className="px-6 py-4 text-right">
+                                                    {role === 'admin' ? (
+                                                        <div className="flex justify-end gap-2">
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(item.id, 'verified')}
+                                                                disabled={item.status === 'verified'}
+                                                                className="p-1.5 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-lg hover:bg-emerald-100 disabled:opacity-30 disabled:hover:bg-emerald-50 transition-colors"
+                                                                title="Verifikasi"
+                                                            >
+                                                                <Check className="w-4 h-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(item.id, 'rejected')}
+                                                                disabled={item.status === 'rejected'}
+                                                                className="p-1.5 bg-rose-50 border border-rose-100 text-rose-600 rounded-lg hover:bg-rose-100 disabled:opacity-30 disabled:hover:bg-rose-50 transition-colors"
+                                                                title="Tolak"
+                                                            >
+                                                                <X className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-xs text-[var(--color-text-muted)] italic">View Only</span>
+                                                    )}
+                                                </td>
+                                            </motion.tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

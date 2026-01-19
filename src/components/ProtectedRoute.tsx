@@ -27,10 +27,10 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                    <p className="text-sm font-bold text-dark/40 dark:text-white/40 uppercase tracking-widest">Memuat Sesi...</p>
+                    <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
+                    <p className="text-sm font-medium text-[var(--color-text-muted)] animate-pulse">Memuat Sesi...</p>
                 </div>
             </div>
         );

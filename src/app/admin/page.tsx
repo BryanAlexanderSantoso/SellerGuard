@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ShieldCheck, AlertCircle, Check, X, ShieldAlert, Filter, Search, Play, Users, TrendingUp, BarChart3, Eye, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -32,22 +32,10 @@ export default function AdminDashboard() {
 
                 if (!reportError) setReports(reportData || []);
 
-                // 2. Fetch Stats from database
-                const { count: blacklistedCount } = await supabase
-                    .from('blacklist')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('status', 'verified');
-
-                const { count: pendingCount } = await supabase
-                    .from('blacklist')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('status', 'pending');
-
-                // Fetch global stats
-                const { data: statsData } = await supabase
-                    .from('stats')
-                    .select('key, value')
-                    .in('key', ['total_resolved_disputes', 'total_fraud_blocked']);
+                // 2. Fetch Stats
+                const { count: blacklistedCount } = await supabase.from('blacklist').select('*', { count: 'exact', head: true }).eq('status', 'verified');
+                const { count: pendingCount } = await supabase.from('blacklist').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+                const { data: statsData } = await supabase.from('stats').select('key, value').in('key', ['total_resolved_disputes', 'total_fraud_blocked']);
 
                 const totalResolved = statsData?.find(s => s.key === 'total_resolved_disputes')?.value || 0;
                 const fraudBlocked = statsData?.find(s => s.key === 'total_fraud_blocked')?.value || 0;
@@ -68,7 +56,6 @@ export default function AdminDashboard() {
 
         fetchData();
 
-        // Real-time subscription
         const channel = supabase
             .channel('admin_updates')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'blacklist' }, () => fetchData())
@@ -93,23 +80,25 @@ export default function AdminDashboard() {
 
     return (
         <ProtectedRoute allowedRoles={['admin']}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-background data-theme-aware transition-colors duration-300">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+            <div className="max-w-7xl mx-auto px-6 py-12 bg-[var(--background)]">
+
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
                     <div>
-                        <h1 className="text-3xl font-black text-dark dark:text-white tracking-tight">Ecosystem <span className="text-primary">Oversight</span></h1>
-                        <p className="text-dark/60 dark:text-white/60 mt-1">Global command center for fraud detection & mediation</p>
+                        <h1 className="text-3xl font-serif font-medium text-[var(--color-text-main)] mb-2">Admin Console</h1>
+                        <p className="text-[var(--color-text-muted)] text-sm">Global command center for fraud detection & mediation</p>
                     </div>
                     <div className="flex gap-3">
                         <div className="relative">
                             <input
                                 type="text"
-                                placeholder="Search reports or accounts..."
-                                className="bg-white dark:bg-white/5 border border-dark/10 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-4 focus:ring-primary/10 outline-none w-80 text-dark dark:text-white transition-all shadow-sm"
+                                placeholder="Search reports..."
+                                className="bg-[var(--surface)] border border-[var(--border)] rounded-lg py-2.5 pl-10 pr-4 text-sm focus:border-[var(--primary)] outline-none w-80 text-[var(--color-text-main)] shadow-sm placeholder:text-[var(--color-text-muted)] opacity-80"
                             />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark/30" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
                         </div>
-                        <button className="p-3 bg-white dark:bg-white/5 border border-dark/10 dark:border-white/10 rounded-xl hover:bg-dark/[0.02] transition-colors">
-                            <Filter className="w-5 h-5 text-dark/70 dark:text-white/70" />
+                        <button className="p-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-lg hover:bg-[var(--background)] transition-colors text-[var(--color-text-muted)]">
+                            <Filter className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
@@ -117,87 +106,80 @@ export default function AdminDashboard() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
                     {[
-                        { label: 'Total Resolved', value: stats.totalResolved.toLocaleString(), icon: ShieldCheck, color: 'emerald' },
-                        { label: 'Pending Review', value: stats.pending, icon: AlertCircle, color: 'amber' },
-                        { label: 'Verified Blacklist', value: stats.blacklisted, icon: ShieldAlert, color: 'rose' },
-                        { label: 'Fraud Attempts Blocked', value: stats.fraudBlocked.toLocaleString(), icon: TrendingUp, color: 'blue' }
+                        { label: 'Resolved', value: stats.totalResolved.toLocaleString(), icon: ShieldCheck, color: 'text-emerald-600' },
+                        { label: 'Pending', value: stats.pending, icon: AlertCircle, color: 'text-amber-600' },
+                        { label: 'Blacklisted', value: stats.blacklisted, icon: ShieldAlert, color: 'text-rose-600' },
+                        { label: 'Blocked', value: stats.fraudBlocked.toLocaleString(), icon: TrendingUp, color: 'text-blue-600' }
                     ].map((stat, i) => (
-                        <motion.div
-                            key={stat.label}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="glass-card p-6 flex items-center gap-5 dark:bg-white/5"
-                        >
-                            <div className={`p-4 rounded-2xl bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400`}>
-                                <stat.icon className="w-6 h-6" />
-                            </div>
+                        <div key={stat.label} className="claude-card p-6 flex items-start justify-between bg-[var(--surface)]">
                             <div>
-                                <p className="text-xs font-black text-dark/40 dark:text-white/40 uppercase tracking-widest mb-1">{stat.label}</p>
-                                <p className="text-2xl font-black text-dark dark:text-white">{stat.value}</p>
+                                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">{stat.label}</p>
+                                <p className="text-2xl font-serif text-[var(--color-text-main)]">{stat.value}</p>
                             </div>
-                        </motion.div>
+                            <stat.icon className={`w-5 h-5 ${stat.color} opacity-80`} />
+                        </div>
                     ))}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Live Incidents Feed */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-black text-dark dark:text-white flex items-center gap-2">
-                                <Play className="w-5 h-5 text-primary fill-primary" /> Moderation Queue (Pending)
-                            </h2>
-                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full animate-pulse uppercase tracking-widest">
-                                <span className="w-1 h-1 bg-emerald-500 rounded-full" /> Live
-                            </span>
+                    {/* Live Incidents Feed (Left Column) */}
+                    <div className="lg:col-span-2">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-serif font-medium text-[var(--color-text-main)]">Moderation Queue</h2>
+                            {stats.pending > 0 && (
+                                <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live
+                                </span>
+                            )}
                         </div>
 
-                        <div className="bg-white dark:bg-white/5 border border-dark/10 dark:border-white/10 rounded-3xl overflow-hidden shadow-sm">
-                            <table className="w-full text-left border-collapse">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden shadow-sm">
+                            <table className="w-full text-left">
                                 <thead>
-                                    <tr className="bg-dark/[0.02] dark:bg-white/[0.02] border-bottom border-dark/5 dark:border-white/5">
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-dark/40 dark:text-white/40">Timestamp</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-dark/40 dark:text-white/40">Subject</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-dark/40 dark:text-white/40">Reason</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-dark/40 dark:text-white/40 text-right">Action</th>
+                                    <tr className="border-b border-[var(--border)] bg-[var(--background)]">
+                                        <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)] w-32">Time</th>
+                                        <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)]">Subject</th>
+                                        <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)]">Reason</th>
+                                        <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)] text-right">View</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-[var(--border)]">
                                     {(!mounted || isLoading) ? (
                                         <tr>
-                                            <td colSpan={4} className="px-6 py-12 text-center">
-                                                <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-2" />
-                                                <p className="text-xs font-bold text-dark/30 dark:text-white/30 tracking-widest uppercase">Fetching Live Data...</p>
+                                            <td colSpan={4} className="px-6 py-12 text-center text-[var(--color-text-muted)]">
+                                                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 opacity-50" />
+                                                <span className="text-xs">Loading data...</span>
                                             </td>
                                         </tr>
                                     ) : reports.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="px-6 py-12 text-center text-dark/30 dark:text-white/30 font-bold uppercase tracking-widest text-xs">
-                                                No pending reports found in ecosystem
+                                            <td colSpan={4} className="px-6 py-12 text-center text-[var(--color-text-muted)] text-sm">
+                                                No pending reports found. All clean.
                                             </td>
                                         </tr>
                                     ) : (
                                         reports.map((report) => (
-                                            <tr key={report.id} className="border-b border-dark/5 dark:border-white/5 hover:bg-dark/[0.01] dark:hover:bg-white/[0.01] transition-colors group">
-                                                <td className="px-6 py-4 text-xs font-mono text-dark/50 dark:text-white/50">
-                                                    {new Date(report.created_at).toLocaleTimeString()}
+                                            <tr
+                                                key={report.id}
+                                                className={`transition-colors cursor-pointer hover:bg-[var(--background)] ${selectedReport?.id === report.id ? 'bg-[var(--background)]' : ''}`}
+                                                onClick={() => setSelectedReport(report)}
+                                            >
+                                                <td className="px-6 py-4 text-xs font-mono text-[var(--color-text-muted)]">
+                                                    {new Date(report.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex flex-col">
-                                                        <span className="text-sm font-bold text-dark dark:text-white">{report.subject_name}</span>
-                                                        <span className="text-[10px] text-dark/40 dark:text-white/40 font-bold uppercase tracking-widest">{report.platform}</span>
+                                                        <span className="text-sm font-medium text-[var(--color-text-main)]">{report.subject_name}</span>
+                                                        <span className="text-xs text-[var(--color-text-muted)]">{report.platform}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-widest border border-rose-100 dark:border-rose-500/20">
+                                                    <span className="inline-flex px-2.5 py-0.5 rounded text-xs font-medium bg-rose-50 text-rose-700 border border-rose-100">
                                                         {report.reason}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button
-                                                        onClick={() => setSelectedReport(report)}
-                                                        className="p-2.5 bg-dark/5 dark:bg-white/5 hover:bg-primary hover:text-white rounded-xl transition-all group-hover:scale-110 active:scale-90"
-                                                    >
+                                                    <button className="p-1.5 text-[var(--color-text-muted)] hover:text-[var(--primary)] transition-colors">
                                                         <Eye className="w-4 h-4" />
                                                     </button>
                                                 </td>
@@ -209,106 +191,65 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    {/* Mediation Panel */}
+                    {/* Mediation Panel (Right Column) */}
                     <div className="lg:col-span-1">
-                        <div className="bg-dark text-white rounded-[2.5rem] p-8 min-h-[500px] relative overflow-hidden flex flex-col shadow-2xl dark:bg-[#111827]">
-                            <div className="absolute top-0 right-0 p-6 opacity-10">
-                                <ShieldAlert className="w-32 h-32" />
-                            </div>
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6 min-h-[500px] flex flex-col shadow-sm sticky top-24">
+                            {selectedReport ? (
+                                <div className="space-y-6 flex flex-col h-full">
+                                    <div>
+                                        <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Reviewing Case</p>
+                                        <h3 className="text-2xl font-serif font-medium text-[var(--color-text-main)] mb-1">{selectedReport.subject_name}</h3>
+                                        <p className="text-xs text-[var(--color-text-muted)] font-mono">{selectedReport.id}</p>
+                                    </div>
 
-                            <div className="relative z-10 flex-1">
-                                {selectedReport ? (
-                                    <div className="space-y-6">
-                                        <div>
-                                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Detailed Mediation Analysis</p>
-                                            <h3 className="text-2xl font-black tracking-tight">{selectedReport.subject_name}</h3>
+                                    <div className="space-y-4 flex-1">
+                                        <div className="p-4 bg-[var(--background)] rounded-lg border border-[var(--border)]">
+                                            <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Report Context</p>
+                                            <p className="text-sm text-[var(--color-text-main)] italic leading-relaxed">
+                                                "{selectedReport.description || 'No description provided.'}"
+                                            </p>
                                         </div>
 
-                                        <div className="space-y-4">
-                                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Evidence Review</p>
-                                                <div className="flex gap-2">
-                                                    <div className="flex-1 aspect-video bg-white/10 rounded-xl flex items-center justify-center border border-dashed border-white/20">
-                                                        <Play className="w-4 h-4 opacity-40 hover:scale-125 transition-transform cursor-pointer" />
-                                                    </div>
-                                                    <div className="flex-1 aspect-video bg-white/10 rounded-xl flex items-center justify-center border border-dashed border-white/20">
-                                                        <Play className="w-4 h-4 opacity-40 hover:scale-125 transition-transform cursor-pointer" />
-                                                    </div>
+                                        <div>
+                                            <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Quick Evidence Check</p>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="aspect-video bg-[var(--background)] rounded border border-[var(--border)] flex items-center justify-center cursor-pointer hover:bg-black/5 transition-colors">
+                                                    <Play className="w-4 h-4 text-[var(--color-text-muted)] opacity-50" />
+                                                </div>
+                                                <div className="aspect-video bg-[var(--background)] rounded border border-[var(--border)] flex items-center justify-center cursor-pointer hover:bg-black/5 transition-colors">
+                                                    <Play className="w-4 h-4 text-[var(--color-text-muted)] opacity-50" />
                                                 </div>
                                             </div>
-
-                                            <div className="bg-white/10 rounded-2xl p-4">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Report Context</p>
-                                                <p className="text-sm font-medium leading-relaxed italic">
-                                                    "{selectedReport.description || 'No description provided.'}"
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="pt-6 border-t border-white/10 mt-auto">
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-6 text-center">Protocol Verdict Selection</p>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button
-                                                    onClick={() => handleVerdict(selectedReport.id, 'verified')}
-                                                    className="bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
-                                                >
-                                                    <Check className="w-4 h-4" /> ACC (Proses)
-                                                </button>
-                                                <button
-                                                    onClick={() => handleVerdict(selectedReport.id, 'dismissed')}
-                                                    className="bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all"
-                                                >
-                                                    <X className="w-4 h-4" /> Tolak (Non ACC)
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className="h-full flex flex-col items-center justify-center text-center">
-                                        <ShieldCheck className="w-16 h-16 text-primary mb-6" />
-                                        <h3 className="text-xl font-black tracking-tight mb-2">Ready for Mediation</h3>
-                                        <p className="text-white/40 text-sm font-medium max-w-[200px]">Select an incident from the feed to perform protocol analysis</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
 
-                        {/* Audit Log Card */}
-                        <div className="mt-6 glass-card p-6 dark:bg-white/5 border-dashed border-2">
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-dark/40 dark:text-white/40 mb-4 flex items-center gap-2">
-                                <BarChart3 className="w-4 h-4" /> Ecosystem Scan Log
-                            </h4>
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-500">
-                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                                    <span>MD5 Hash match found on 2 incidents</span>
+                                    <div className="pt-6 border-t border-[var(--border)] mt-auto">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                onClick={() => handleVerdict(selectedReport.id, 'verified')}
+                                                className="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors shadow-sm"
+                                            >
+                                                <Check className="w-4 h-4" /> Accept
+                                            </button>
+                                            <button
+                                                onClick={() => handleVerdict(selectedReport.id, 'dismissed')}
+                                                className="bg-white border border-[var(--border)] hover:bg-[var(--background)] text-[var(--color-text-main)] py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                                            >
+                                                <X className="w-4 h-4" /> Reject
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2 text-[10px] font-bold text-dark/30 dark:text-white/30 uppercase tracking-[0.1em]">
-                                    <div className="w-1.5 h-1.5 bg-dark/20 dark:bg-white/20 rounded-full" />
-                                    <span>Scanning Global Blacklist DB... 100%</span>
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
+                                    <ShieldCheck className="w-12 h-12 text-[var(--color-text-muted)] mb-4" />
+                                    <p className="text-sm font-medium text-[var(--color-text-main)]">Select a report to review</p>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
-
-                {/* Info Modal Placeholder */}
-                <AnimatePresence>
-                    {selectedReport && (
-                        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                            {/* Backdrop check handled by state or separate overlay */}
-                        </div>
-                    )}
-                </AnimatePresence>
             </div>
         </ProtectedRoute>
-    );
-}
-
-function ChevronRight({ className }: { className?: string }) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
     );
 }

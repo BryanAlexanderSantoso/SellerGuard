@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Scan, PlayCircle, Upload, CheckCircle2, Package, Search, Camera, ShieldCheck, FileText, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Scan, PlayCircle, Upload, CheckCircle2, Camera, ShieldCheck, FileText, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -67,20 +67,19 @@ const RecordAction = () => {
     };
 
     return (
-        <div className="glass-card p-8 h-full flex flex-col relative overflow-hidden">
+        <div className="claude-card p-6 h-full flex flex-col relative overflow-hidden">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-xl font-bold text-dark flex items-center gap-2">
-                        <Camera className="w-6 h-6 text-primary" /> Photo & Pack
+                    <h2 className="text-lg font-serif font-medium text-[var(--color-text-main)] flex items-center gap-2">
+                        Photo & Pack
                     </h2>
-                    <p className="text-sm text-dark/60">Ambil foto resi & rekam video packing</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Ambil foto resi & rekam video packing</p>
                 </div>
                 <div className="flex items-center gap-2">
                     {[1, 2, 3].map((s) => (
                         <div
                             key={s}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${step === s ? 'w-6 bg-primary' : 'bg-primary/20'
-                                }`}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${step === s ? 'bg-[var(--primary)]' : 'bg-[var(--border)]'}`}
                         />
                     ))}
                 </div>
@@ -97,31 +96,31 @@ const RecordAction = () => {
                             <input
                                 type="text"
                                 placeholder="Scan Barcode Resi..."
-                                className="w-full bg-white/50 border border-dark/10 rounded-2xl py-5 px-14 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-lg font-medium"
+                                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg py-3 pl-10 pr-4 focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none transition-all text-[var(--color-text-main)] font-mono"
                                 value={resi}
                                 onChange={(e) => setResi(e.target.value)}
                             />
-                            <Scan className="absolute left-5 top-1/2 -translate-y-1/2 text-primary w-6 h-6" />
+                            <Scan className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] w-4 h-4" />
                             {resi && (
-                                <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                    <span className="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-1 rounded font-bold">VALID RESI</span>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <span className="text-[10px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-medium border border-emerald-100">VALID</span>
                                 </div>
                             )}
                         </div>
 
-                        <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10 flex items-start gap-3">
-                            <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                            <p className="text-xs text-dark/60 leading-relaxed font-medium">
-                                Metadata-Locked: SellerGuard akan langsung mengunci koordinat GPS, Timestamp, dan Device ID ke dalam bukti packing Anda.
+                        <div className="p-4 bg-[var(--background)] rounded-lg border border-[var(--border)] flex items-start gap-3">
+                            <ShieldCheck className="w-5 h-5 text-[var(--primary)] shrink-0 mt-0.5" />
+                            <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
+                                Metadata-Locked: EcomGuard akan langsung mengunci koordinat GPS, Timestamp, dan Device ID ke dalam bukti packing Anda.
                             </p>
                         </div>
 
                         <button
                             onClick={() => setStep(2)}
                             disabled={!resi}
-                            className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-lg"
+                            className="claude-button w-full flex items-center justify-center gap-2 disabled:opacity-50"
                         >
-                            <Camera className="w-6 h-6" /> Foto Resi (Step 1/2)
+                            <Camera className="w-4 h-4" /> Foto Resi (Step 1/2)
                         </button>
                     </motion.div>
                 )}
@@ -132,33 +131,31 @@ const RecordAction = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="space-y-6"
                     >
-                        <div className="aspect-video bg-dark/5 rounded-[2.5rem] border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-4 group cursor-pointer hover:bg-primary/[0.03] transition-all relative overflow-hidden">
-                            <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-rose-500 text-white rounded-full text-[10px] font-bold animate-pulse">
-                                <span className="w-2 h-2 bg-white rounded-full" /> REC LIVE
+                        <div className="aspect-video bg-[var(--background)] rounded-xl border border-dashed border-[var(--border)] flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-[var(--surface)] transition-all relative overflow-hidden group">
+
+                            <div className="w-12 h-12 rounded-full border border-[var(--border)] flex items-center justify-center bg-[var(--surface)] shadow-sm group-hover:scale-105 transition-transform">
+                                <PlayCircle className="text-[var(--primary)] w-6 h-6" />
                             </div>
-                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                                <PlayCircle className="text-primary w-8 h-8" />
-                            </div>
-                            <p className="text-dark/60 font-bold tracking-tight">Mulai Rekam Video Packing</p>
-                            <div className="flex gap-2">
-                                <span className="text-[10px] bg-dark/10 px-2 py-1 rounded">4K 60FPS</span>
-                                <span className="text-[10px] bg-dark/10 px-2 py-1 rounded">GPS TAGGED</span>
+                            <p className="text-[var(--color-text-muted)] font-medium text-sm">Mulai Rekam Video Packing</p>
+                            <div className="flex gap-2 opacity-60">
+                                <span className="text-[10px] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--color-text-muted)]">4K 60FPS</span>
+                                <span className="text-[10px] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--color-text-muted)]">GPS TAGGED</span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <button
                                 onClick={() => setStep(1)}
-                                className="w-full bg-dark/5 text-dark font-bold py-4 rounded-2xl hover:bg-dark/10 transition-all"
+                                className="claude-button-outline w-full"
                             >
                                 Kembali
                             </button>
                             <button
                                 onClick={handleUpload}
                                 disabled={isUploading}
-                                className="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                                className="claude-button w-full flex items-center justify-center gap-2"
                             >
-                                {isUploading ? <><Loader2 className="w-5 h-5 animate-spin" /> Uploading...</> : 'Selesai & Upload'}
+                                {isUploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</> : 'Selesai & Upload'}
                             </button>
                         </div>
                     </motion.div>
@@ -170,35 +167,30 @@ const RecordAction = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="flex flex-col items-center text-center gap-6 py-4"
                     >
-                        <div className="relative">
-                            <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center">
-                                <CheckCircle2 className="text-emerald-600 w-12 h-12" />
-                            </div>
-                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center">
-                                <Upload className="w-5 h-5 text-primary" />
-                            </div>
+                        <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-100">
+                            <CheckCircle2 className="text-emerald-600 w-8 h-8" />
                         </div>
 
                         <div>
-                            <h3 className="text-2xl font-black text-dark tracking-tight">Evidence Secured!</h3>
-                            <p className="text-dark/60 mt-1">Order <span className="text-primary font-mono font-bold">#{resi}</span> telah terdaftar di SellerGuard Vault.</p>
+                            <h3 className="text-xl font-serif font-medium text-[var(--color-text-main)]">Evidence Secured!</h3>
+                            <p className="text-[var(--color-text-muted)] mt-1 text-sm">Order <span className="text-[var(--primary)] font-mono">{resi}</span> telah terdaftar.</p>
                         </div>
 
                         <div className="w-full grid grid-cols-1 gap-3">
                             <button
                                 onClick={generateLegalTemplate}
-                                className="flex items-center justify-center gap-2 w-full py-4 bg-dark text-white rounded-2xl font-bold text-sm hover:brightness-110 transition-all disabled:opacity-50"
+                                className="claude-button flex items-center justify-center gap-2 w-full disabled:opacity-70"
                                 disabled={isGeneratingLegal}
                             >
                                 {isGeneratingLegal ? (
-                                    <div className="flex items-center gap-2 italic"><span className="animate-spin text-lg">◌</span> Generating legal template...</div>
+                                    <div className="flex items-center gap-2"><Loader2 className="animate-spin w-4 h-4" /> Generating...</div>
                                 ) : (
                                     <><FileText className="w-4 h-4" /> Download Legal Template (Appeal)</>
                                 )}
                             </button>
                             <button
                                 onClick={() => { setStep(1); setResi(''); }}
-                                className="w-full py-4 bg-white border border-dark/10 text-dark font-bold rounded-2xl hover:bg-dark/[0.02] transition-all text-sm"
+                                className="claude-button-outline w-full text-sm"
                             >
                                 Foto & Pack Paket Lain
                             </button>
@@ -208,8 +200,8 @@ const RecordAction = () => {
             </div>
 
             {/* Float Label */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-dark/5 rounded-full">
-                <p className="text-[10px] font-bold text-dark/30 uppercase tracking-[0.2em]">Evidence Protection System v2.0</p>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-[var(--surface)] border border-[var(--border)] rounded-full">
+                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Evidence Protection System v2.0</p>
             </div>
         </div>
     );

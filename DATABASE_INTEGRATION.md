@@ -1,4 +1,4 @@
-# SellerGuard - Perbaikan Database Integration
+# EcomGuard - Perbaikan Database Integration
 
 ## 📋 Ringkasan Perubahan
 
@@ -208,4 +208,4 @@ CREATE POLICY "Anyone can read stats" ON public.stats
 
 ## 🎉 Kesimpulan
 
-Semua data di SellerGuard sekarang sudah **fully integrated dengan database**. Tidak ada lagi data dummy atau hardcoded. Aplikasi siap untuk production!
+Semua data di EcomGuard sekarang sudah **fully integrated dengan database**. Tidak ada lagi data dummy atau hardcoded. Aplikasi siap untuk production!

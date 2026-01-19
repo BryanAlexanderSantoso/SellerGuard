@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Package, Video, Users, Database, ArrowRight, CheckCircle2, Lock, Eye, MousePointer2, ShieldAlert } from 'lucide-react';
+import { Shield, Package, Video, Users, Database, ArrowRight, CheckCircle2, Lock, Eye, MousePointer2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HowItWorksPage() {
@@ -12,161 +12,140 @@ export default function HowItWorksPage() {
             description: 'Penjual merekam video saat membungkus paket. Sistem kami mengunci metadata (waktu, lokasi, ID perangkat) agar bukti tidak bisa dimanipulasi.',
             analogy: 'Ibarat Notaris Digital yang mencatat detik demi detik persiapan paket Anda agar sah di mata hukum.',
             icon: Package,
-            color: 'emerald'
         },
         {
             title: 'Aman di Vault Cloud',
-            description: 'Video tidak disimpan di HP, tapi langsung ke brankas digital SellerGuard. Ini menjamin bukti tidak sengaja terhapus atau diedit.',
+            description: 'Video tidak disimpan di HP, tapi langsung ke brankas digital EcomGuard. Ini menjamin bukti tidak sengaja terhapus atau diedit.',
             analogy: 'Ibarat Brankas Bank di mana kunci pembukanya dipegang bersama oleh sistem keamanan tingkat tinggi.',
             icon: Database,
-            color: 'blue'
         },
         {
             title: 'Buyer Verifikasi Unboxing',
             description: 'Pembeli merekam video saat membuka paket. Sistem mencocokkan kondisi paket saat dikirim dan saat diterima secara transparan.',
             analogy: 'Ibarat Cermin Kejujuran. Kedua pihak melihat hal yang sama tanpa ada yang bisa berbohong.',
             icon: Video,
-            color: 'amber'
         },
         {
             title: 'Mediasi Adil (Jika Ada Masalah)',
             description: 'Jika terjadi sengketa, Admin meninjau kedua video secara berdampingan. Keputusan diambil berdasarkan bukti digital yang valid.',
             analogy: 'Ibarat Hakim yang memiliki rekaman CCTV dari dua sudut pandang berbeda untuk menentukan siapa yang benar.',
             icon: Shield,
-            color: 'rose'
         }
     ];
 
     return (
-        <div className="relative min-h-screen bg-background text-foreground overflow-hidden transition-colors duration-300">
-            {/* Background Decoration */}
-            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary/10 dark:from-primary/5 to-transparent -z-10" />
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10" />
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pt-32 pb-20">
+            <main className="max-w-4xl mx-auto px-6">
 
-            <main className="max-w-5xl mx-auto px-6 py-20 pt-32">
                 {/* Hero Section */}
                 <div className="text-center mb-24">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 dark:bg-white/5 text-primary dark:text-primary-light text-xs font-black uppercase tracking-widest mb-6 border border-primary/10 dark:border-white/5"
+                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-xs font-medium uppercase tracking-widest mb-6"
                     >
-                        <Lock className="w-4 h-4" /> Security Protocol v2.0
+                        <Lock className="w-3 h-3" /> Security Protocol v2.0
                     </motion.div>
                     <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl md:text-7xl font-black text-dark dark:text-white tracking-tight mb-8"
+                        className="text-4xl md:text-5xl font-serif font-bold text-[var(--color-text-main)] mb-6"
                     >
-                        Bagaimana SellerGuard <br />
-                        <span className="text-primary font-serif italic">Melindungi</span> Anda?
+                        Bagaimana EcomGuard <br />
+                        <span className="text-[var(--color-text-muted)] italic">Melindungi Anda?</span>
                     </motion.h1>
                     <motion.p
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-lg md:text-xl text-dark/60 dark:text-white/60 max-w-3xl mx-auto leading-relaxed italic"
+                        className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto leading-relaxed"
                     >
-                        "Bayangkan SellerGuard sebagai saksi kunci yang tidak pernah tidur,
+                        "Bayangkan EcomGuard sebagai saksi kunci yang tidak pernah tidur,
                         mencatat setiap kejujuran dalam setiap paket yang Anda kirim atau terima."
                     </motion.p>
                 </div>
 
                 {/* Steps Section */}
-                <div className="space-y-12 relative">
+                <div className="space-y-8 relative">
                     {/* Vertical Line */}
-                    <div className="absolute left-[31px] top-10 bottom-10 w-0.5 bg-dark/5 dark:bg-white/5 hidden md:block" />
+                    <div className="absolute left-[27px] top-4 bottom-4 w-px bg-gray-200 hidden md:block" />
 
                     {steps.map((step, index) => (
                         <motion.div
                             key={step.title}
-                            initial={{ opacity: 0, x: -30 }}
+                            initial={{ opacity: 0, x: -10 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="relative flex flex-col md:flex-row gap-8 items-start group"
+                            className="relative flex flex-col md:flex-row gap-6 items-start group"
                         >
                             {/* Step Number/Icon */}
-                            <div className={`w-16 h-16 shrink-0 rounded-[1.5rem] flex items-center justify-center bg-white dark:bg-slate-900 border border-dark/5 dark:border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500 z-10 ${step.color === 'emerald' ? 'text-emerald-500' :
-                                step.color === 'blue' ? 'text-blue-500' :
-                                    step.color === 'amber' ? 'text-amber-500' : 'text-rose-500'
-                                }`}>
-                                <step.icon className="w-8 h-8" />
+                            <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-white border border-gray-200 shadow-sm z-10 group-hover:border-gray-300 transition-colors">
+                                <step.icon className="w-6 h-6 text-gray-700" />
                             </div>
 
-                            <div className="flex-1 glass-card p-10 hover:border-primary/20 dark:hover:border-primary/40 transition-all dark:bg-white/5 shadow-2xl shadow-black/5 dark:shadow-black/20">
-                                <h3 className="text-2xl font-black text-dark dark:text-white mb-4 tracking-tight flex items-center gap-3">
-                                    <span className="text-sm font-mono text-dark/20 dark:text-white/20">0{index + 1}.</span>
-                                    {step.title}
-                                </h3>
-                                <p className="text-dark/60 dark:text-white/60 leading-relaxed mb-6 font-medium">
+                            <div className="flex-1 claude-card p-8 bg-white hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="text-xs font-mono text-gray-400">STEP 0{index + 1}</span>
+                                    <h3 className="text-xl font-serif font-semibold text-gray-900">
+                                        {step.title}
+                                    </h3>
+                                </div>
+                                <p className="text-gray-600 leading-relaxed mb-6">
                                     {step.description}
                                 </p>
 
-                                <div className={`p-5 rounded-2xl flex items-start gap-4 italic text-sm ${step.color === 'emerald' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-500/20' :
-                                    step.color === 'blue' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-500/20' :
-                                        step.color === 'amber' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-500/20' :
-                                            'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-100 dark:border-rose-500/20'
-                                    }`}>
-                                    <div className="mt-1"><MousePointer2 className="w-4 h-4" /></div>
-                                    <p><span className="font-bold opacity-70">Analoginya:</span> {step.analogy}</p>
+                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-3 text-sm text-gray-600 italic">
+                                    <div className="mt-1 shrink-0"><MousePointer2 className="w-4 h-4 text-gray-400" /></div>
+                                    <p><span className="font-semibold text-gray-800 not-italic">Analoginya:</span> {step.analogy}</p>
                                 </div>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                {/* Blacklist Section */}
+                {/* Community Section - Simplistic Gray */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mt-32 rounded-[3.5rem] p-12 md:p-20 bg-gradient-to-br from-dark to-slate-900 dark:from-emerald-900 dark:to-slate-900 text-white relative overflow-hidden text-center shadow-2xl"
+                    className="mt-24 p-10 bg-gray-900 rounded-2xl text-white text-center relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 p-8 opacity-5">
-                        <Users className="w-80 h-80" />
-                    </div>
                     <div className="relative z-10">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-emerald-400 text-xs font-black uppercase tracking-widest mb-8 border border-white/10">
-                            <ShieldAlert className="w-4 h-4" /> Community Powered Security
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-gray-300 text-xs font-medium uppercase tracking-widest mb-6 border border-white/10">
+                            <Users className="w-3 h-3" /> Community Power
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-tight">Kekuatan <span className="text-emerald-400">Komunitas</span></h2>
-                        <p className="text-white/70 text-lg md:text-xl max-w-3xl mx-auto mb-12 leading-relaxed font-medium italic">
-                            "Ecosystem Blacklist kami bekerja seperti Siskamling Digital. Jika satu toko kena tipu,
-                            ribuan toko lainnya akan langsung waspada terhadap nomor HP atau username penipu tersebut."
+                        <h2 className="text-3xl font-serif font-bold mb-4">Kekuatan Komunitas</h2>
+                        <p className="text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed text-lg">
+                            Jika satu toko kena tipu, ribuan toko lainnya akan langsung waspada.
+                            Ini adalah sistem pertahanan bersama.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-6">
-                            <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-8 py-4 rounded-2xl text-base font-bold hover:bg-white/10 transition-all">
-                                <CheckCircle2 className="text-emerald-400 w-6 h-6" /> 24/7 Security Audit
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg text-sm text-gray-300 font-medium">
+                                <CheckCircle2 className="w-4 h-4" /> 24/7 Audit
                             </div>
-                            <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-8 py-4 rounded-2xl text-base font-bold hover:bg-white/10 transition-all">
-                                <CheckCircle2 className="text-emerald-400 w-6 h-6" /> Global Network Block
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg text-sm text-gray-300 font-medium">
+                                <CheckCircle2 className="w-4 h-4" /> Global Block
                             </div>
                         </div>
                     </div>
-
-                    {/* Decorative radial gradient */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px] -z-0" />
                 </motion.div>
 
-                {/* Final Call to Action */}
-                <div className="mt-40 text-center pb-20">
-                    <h2 className="text-4xl font-black text-dark dark:text-white mb-10 tracking-tight">Siap Membangun Bisnis <br className="md:hidden" /> Yang Lebih Aman?</h2>
-                    <div className="flex flex-col md:flex-row justify-center gap-4">
-                        <Link href="/seller" className="px-12 py-5 bg-primary text-white font-bold rounded-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all text-lg">
+                {/* CTA */}
+                <div className="mt-24 text-center">
+                    <h2 className="text-3xl font-serif font-bold text-[var(--color-text-main)] mb-8">
+                        Siap Mengamankan Bisnis Anda?
+                    </h2>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <Link href="/seller" className="claude-button">
                             Daftar Sebagai Seller
                         </Link>
-                        <Link href="/" className="px-12 py-5 bg-white dark:bg-white/5 border border-dark/10 dark:border-white/10 text-dark dark:text-white font-bold rounded-2xl hover:bg-dark/[0.02] dark:hover:bg-white/10 transition-all text-lg">
-                            Cek Status Paket Saya
+                        <Link href="/" className="claude-button-outline">
+                            Kembali ke Beranda
                         </Link>
                     </div>
                 </div>
             </main>
-
-            {/* Footer Sublabel */}
-            <div className="text-center py-10 opacity-20 dark:opacity-40">
-                <p className="text-[10px] font-bold text-dark dark:text-white uppercase tracking-[0.5em]">End-to-End Truth Engine v4.0.1</p>
-            </div>
         </div>
     );
 }
